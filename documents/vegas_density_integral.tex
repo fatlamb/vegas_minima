@@ -1,0 +1,214 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage{dsfont}
+\usepackage{tcolorbox}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\newcommand{\red}{\color{red}}
+\newcommand{\blue}{\color{blue}}
+\newcommand{\magenta}{\color{magenta}}
+\newcommand{\black}{\color{black}}
+\newcommand{\gray}{\color{gray}}
+
+\definecolor{orange}{HTML}{FC4820}
+\newcommand{\orange}{\color{orange}}
+
+\definecolor{lblue}{HTML}{2086B0}
+\newcommand{\lblue}{\color{lblue}}
+
+\definecolor{lgreen}{HTML}{57A04D}
+\newcommand{\lgreen}{\color{lgreen}}
+
+\definecolor{dgray}{HTML}{4D4D4D}
+\newcommand{\dgray}{\color{dgray}}
+
+
+
+\def\half{{1 \over 2}}
+\def\d{{\rm d}}  % Roman d for derivatives
+\def\O{{\cal O}}
+\def\expect#1{\left\langle #1 \right\rangle} % expectation value < >
+\def\eq{Eq.~}
+\def\eqs{Eqs.~}
+\def\eqpar#1{(#1)} % Used to put a number in parentheses and to
+                   % indicate to the renumbering program that it
+                   % is an equation number.
+\def\ds{\displaystyle}
+\def\underarrow#1{\mathrel{\mathop{\Longrightarrow}\limits_{#1}}}
+\def\implies{\quad \Longrightarrow \quad}
+\def\Tr{\mathop{\rm Tr}}
+\def\intinf{\int_{-\infty}^{\infty}}
+\def\diag{\mathop{\rm diag}\nolimits}
+\def\min{{\rm min}}
+
+
+\title{Numerical Calculation of the Peak Density Integral in two Squared-Gaussian Fields}
+
+\begin{document}
+\maketitle
+
+\begin{gather}
+\expect{X}_{Q_2} = \frac{\displaystyle 30375 \sigma_0^6}{\displaystyle 16 \sqrt{30} \pi^{5/2} \kappa^5 \sigma_1^{15}e^{-\nu^2/2} \sqrt{\kappa^2-1}} \,
+
+
+&\qquad \times \int_{-\infty}^{\infty} \d \lambda_1 \,
+     \int_{-\infty}^{\lambda_1} \d \lambda_2 \,
+     \int_{-\infty}^{\lambda_2} \d \lambda_3 (\lambda_1 -
+     \lambda_2) (\lambda_1 - \lambda_3) (\lambda_2 - \lambda_3)
+     \cr
+    &\qquad \times \intinf \d \eta_{3} \, 
+     \intinf \d \eta_{2} \, 
+     \intinf \d \eta_{1} \,  X \, e^{- Q_2} \ .\cr}}\eqno(24)
+\end{gather}
+
+
+
+$$ \braket{\nu_1|\nu_2} = \epsilon e^{i\zeta}$$
+
+
+He uses the orthonormality condition on the flavor eigenstates to write:
+
+$$N = V\sqrt{\mathds{1} + \delta} \approx V(\mathds{1} -\delta/2)$$
+
+Where $V$ is unitary, and we associate $V$ with $U_m(\red\theta\black)$
+
+It is illuminating to rewrite this as:
+
+$$N \approx V (\mathds{1} + \epsilon \Delta)$$
+
+
+I've used $\Delta$ to absorb the transposes and factors of two that accompany AdG's derivation.
+
+This square root approximation is justified by the assumption that the gamma matrix is small. This approximation is technically violated in our simulations, because we've chosen the characteristic decay energies to match the energy at which MSW is apparent, but we can proceed with his assumption to see if we can even distinguish interplay.
+
+
+The flavor-basis hamiltonian will take the form:
+
+$$\mathcal{H}_f = N^{-1} \tilde{\mathcal{H}} N$$
+
+where $\tilde{\mathcal{H}}$ is the hamiltonian written in its eigenbasis.
+
+Explicitly:
+
+$$\mathcal{H}_f = (\mathds{1} + \epsilon \Delta)^{-1}V^{-1} \tilde{\mathcal{H}} V(\mathds{1} + \epsilon \Delta)$$
+
+
+
+Andre assumes the decay+oscillation hamiltonian:
+
+$$\mathcal{H} = M -i\Gamma$$
+
+Where: 
+
+
+
+$$M = U_m^{\dagger}(\red\theta\black)M_d U_m(\red\theta\black)$$
+
+and:
+
+$$\Gamma = U_g^{\dagger}(\blue\phi\black)\Gamma_d U_m(\blue\phi\black)$$
+
+
+
+
+\[U_{M}(\red\theta\black) = \left( \begin{array}{ccc}
+cos(\red\theta\black) & -sin(\red\theta\black) \\
+sin(\red\theta\black) & cos(\red\theta\black) \\
+\end{array} \right)\] 
+
+\[U_{\Gamma}(\blue\phi\black) = \left( \begin{array}{ccc}
+cos(\blue\phi\black) & -sin(\blue\phi\black) \\
+sin(\blue\phi\black) & cos(\blue\phi\black) \\
+\end{array} \right)\]
+
+
+There are two ways we can proceed. We can define:
+
+$$M^{\prime} = M+V_m$$
+
+where $V_m$ is the matter potential, and then redefine $N$ to be the general non-hermitian matrix which diagonalizes the new hamiltonian. This is all well and good, but it's not obvious to me how to do the MSW trick and redefine an angle in a manifestly resonant form as Akhmedov does, because we've just redefined V and $\Delta$.
+
+What I'm trying to do instead is to preserve andre's $N$ matrices and attempt an approximate decomposition of the time evolution operator.
+
+Here:
+
+$$\mathcal{H}_f = N^{-1}\tilde{\mathcal{H}}N + V_m$$
+
+
+Assuming a constant density, the hamiltonian is time independent, so:
+
+$$\mathcal{O}(t,0) = exp\big(-it(N^{-1}\tilde{\mathcal{H}}N + V_m)\big)$$
+
+We want to expand this exponential operator in a manner that exploits the smallness of $\epsilon$. The most general way is the Zassenhaus expansion, which is essentially just an inverse Campbell-Baker-Hausdorff expansion. It's a mess of commutators, and is in fact not very illuminating without explicitly isolating the $\epsilon$ dependence.
+
+Let's examine $N^{-1}\tilde{\mathcal{H}}N$ more carefully.
+
+$$N=V(\mathds{1} + \epsilon \Delta)$$.
+
+In our two flavor case:
+
+$$N = V\begin{pmatrix} 1 & -\frac{1}{2}\epsilon e^{-i\zeta} \\ -\frac{1}{2}\epsilon e^{i\zeta} & 1 \end{pmatrix}$$
+
+Inverting:
+
+$$N^{-1} = \frac{1}{(1-\frac{\epsilon^2}{4})} \begin{pmatrix} 1 & \frac{1}{2}\epsilon e^{-i\zeta} \\ \frac{1}{2}\epsilon e^{i\zeta} & 1 \end{pmatrix}V^{\dagger}$$
+
+The small epsilon approximation: $\epsilon << 1$ allows us to ignore all terms $\mathcal{O}(\epsilon^2)$. We may, therefore, ignore the inverse determinant prefactor on $N^{-1}$, and write simply:
+
+$$N^{-1} = (\mathds{1} - \epsilon \Delta)V^{\dagger}$$
+
+Expanding $N^{-1}\tilde{\mathcal{H}}N$:
+
+$$N^{-1}\tilde{\mathcal{H}}N = V^{\dagger}\tilde{\mathcal{H}}V - \epsilon \Delta V^{\dagger}\tilde{\mathcal{H}}V + \epsilon V^{\dagger}\tilde{\mathcal{H}}V \Delta + \mathcal{O}(\epsilon^2)$$
+
+$$N^{-1}\tilde{\mathcal{H}}N = V^{\dagger}\tilde{\mathcal{H}}V + \epsilon [V^{\dagger}\tilde{\mathcal{H}}V,\Delta]$$
+
+Adding our matter term to reach the full hamiltonian:
+
+$$\mathcal{H}_full  = (V^{\dagger}\tilde{\mathcal{H}}V + V_m) + \epsilon [V^{\dagger}\tilde{\mathcal{H}}V,\Delta]$$
+
+Let $X$ be the first term on the right hand side of the above equation. $Y$ will represent the second. Now, $Y$ is proportional to $\epsilon$, whereas $X$ is not.
+
+Any expansion of this operator as a product of exponents of commutators in $X$ and $Y$ will see all commutators containing $Y$ more than once vanish, drastically simplifying the series.
+
+The question, then, is: can we find a closed form representation?
+
+If we examine the power-series corresponding to our operator exponential, we see:
+
+$$exp[\mathcal{H}_{full}] = \sum_{j=0}^{\infty} \frac{1}{j!} (-it)^j(X + Y)^j$$
+
+But we keep only terms at zeroth or first order in $Y$:
+
+
+
+$$exp[\mathcal{H}_{full}] = \sum_{j=0}^{\infty} \frac{1}{j!} (-it)^j \times \big(X^j + \sum_{k=0}^{j-1} X^k Y X^{(j-k-1)}\big)$$
+
+Where all terms under the sum in on the left are first order in $\epsilon$. The summation arises becasue X and Y do not commute. We can, of course, represent this sum in terms of commutators:
+
+$$exp[\mathcal{H}_{full}] = \sum_{j=0}^{\infty} \frac{1}{j!} (-it)^j \times \big(X^j + jX^{(j-1)} + \sum_{k=0}^{j-1} [X^k,Y] X^{(j-k-1)}\big)$$
+
+We can also represent $[X^k,Y]$ as a sum of nested commutators of the form $[X,X,\cdots,X,Y]$. This kind of expansion will probably lead to a simplified expansion of the Zassenhaus formula. But this, I think, is not what we want, because it brings us no closer to a closed form solution.
+
+Because all such terms are order 1 in $\epsilon$, we cannot ignore any of them...
+
+I haven't calculated more than the first and second of such nested commutators, but I don't see an obvious pattern. Can you think of any way to vanquish this series?
+
+\section*{Addendum}
+
+I think $V$ as described above is associated to $U_{PMNS}$, because in the $\epsilon \rightarrow 0$ limit, $N$ becomes $U$. Can we cheat and include the matter potential in the same way?
+
+
+ 
+
+
+
+
+
+
+
+
+\end{document}
