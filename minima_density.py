@@ -2,15 +2,29 @@
 
 import pyximport; pyximport.install()
 import vegas
-from minima_integrand import f_cython
+import minima_integrand as MI
+import minima_integrand_unordered as MIU
 import numpy as np
 #import time
 
-def calculate_density(nu,s0,s1,kap,npoints):	
+def calculate_density(nu,s0,s1,kap,npoints,ordered=True,test=False):	
 	pi=np.pi
 	
-	f = f_cython(dim=6,nu=nu,s0=s0,s1=s1,kap=kap)
-	integ = vegas.Integrator([[0,pi/2],[0,pi/2],[0,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2]], nhcube_batch=1000)
+	if ordered==True:
+		f = MI.f_cython(dim=6,nu=nu,s0=s0,s1=s1,kap=kap)
+		multiplicity_prefac=1.0
+	if ordered==False:
+		f = MIU.f_cython(dim=6,nu=nu,s0=s0,s1=s1,kap=kap)
+		multiplicity_prefac=1.0/6.0
+
+	if test==True:
+		domain=[[0,pi/2],[0,pi/2],[0,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2]]
+		density_prefac=1.0
+	if test==False:
+		domain=[[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2]]
+		density_prefac= (3.0*np.sqrt(6.0)*nu*np.exp(-nu**2/2.0))/(4.0*np.pi**(3.0/2.0)*s1**3)
+		
+	integ = vegas.Integrator(domain, nhcube_batch=1000)
 	
 	#start = time.clock()
 	
@@ -26,6 +40,9 @@ def calculate_density(nu,s0,s1,kap,npoints):
 	print "TIME: ", end-start
 	"""
 
-	density_prefac= (3.0*np.sqrt(6.0)*nu*np.exp(-nu**2/2.0))/(4.0*np.pi**(3.0/2.0)*s1**3)
 	
-	return [result.mean*density_prefac,result.sdev*density_prefac]
+	retlist = [result.mean,result.sdev]
+	for x in retlist:
+		x*=density_prefac*multiplicity_prefac
+
+	return retlist

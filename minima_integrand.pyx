@@ -39,8 +39,8 @@ cdef class f_cython(vegas.BatchIntegrand):
 				for d in range(self.dim):
 					ijac*=(1/cos(x[i,d]))**2
 					tanx[d]=tan(x[i,d])
-
-				f[i] = self.prefac*ijac*(tanx[0]-tanx[2])*(tanx[0]-tanx[1])*(tanx[1]-tanx[2])*(tanx[0]*tanx[1]*tanx[2])*exp((-1.0)*(0.5*self.nu**2 + (3.0/(2.0*self.s1**2))*(tanx[3]**2+tanx[4]**2+tanx[5]**2) + ((5.0*self.s0**2)/(4*self.kap**2*self.s1**4))*(3.0*(tanx[0]**2+tanx[1]**2+tanx[2]**2 - (2.0/(self.nu*self.s0))*(tanx[0]*tanx[3]**2 + tanx[1]*tanx[4]**2 + tanx[2]*tanx[5]**2) + (1.0/(self.nu**2*self.s0**2))*(tanx[3]**2+tanx[4]**2+tanx[5]**2)**2) - (tanx[0]+tanx[1]+tanx[2] - (1.0/(self.nu*self.s0))*(tanx[3]**2+tanx[4]**2+tanx[5]**2))**2) + (1.0/(2*self.s0**2*(self.kap**2-1)))*(self.nu*self.s0 + (self.s0**2/self.s1**2)*(tanx[0]+tanx[1]+tanx[2] - (1.0/(self.nu*self.s0))*(tanx[3]**2+tanx[4]**2+tanx[5]**2)))**2))  
+	
+					f[i] = self.prefac*ijac*(tanx[0]-tanx[2])*(tanx[0]-tanx[1])*(tanx[1]-tanx[2])*(tanx[0]*tanx[1]*tanx[2])*exp((-1.0)*(0.5*self.nu**2 + (3.0/(2.0*self.s1**2))*(tanx[3]**2+tanx[4]**2+tanx[5]**2) + ((5.0*self.s0**2)/(4*self.kap**2*self.s1**4))*(3.0*(tanx[0]**2+tanx[1]**2+tanx[2]**2 - (2.0/(self.nu*self.s0))*(tanx[0]*tanx[3]**2 + tanx[1]*tanx[4]**2 + tanx[2]*tanx[5]**2) + (1.0/(self.nu**2*self.s0**2))*(tanx[3]**2+tanx[4]**2+tanx[5]**2)**2) - (tanx[0]+tanx[1]+tanx[2] - (1.0/(self.nu*self.s0))*(tanx[3]**2+tanx[4]**2+tanx[5]**2))**2) + (1.0/(2*self.s0**2*(self.kap**2-1)))*(self.nu*self.s0 + (self.s0**2/self.s1**2)*(tanx[0]+tanx[1]+tanx[2] - (1.0/(self.nu*self.s0))*(tanx[3]**2+tanx[4]**2+tanx[5]**2)))**2))  
 			else:
 				f[i]=0.0
 		return f

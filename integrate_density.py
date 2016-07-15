@@ -15,7 +15,7 @@ s0=2.0
 s1=2.0
 kap=2.0
 
-nsamples=200
+nsamples=10
 
 neg=np.linspace(-7.5,0,nsamples/2,False)
 pos=np.multiply(-1.0,neg)[::-1]
@@ -67,6 +67,6 @@ print t
 Write these arrays out to an npz file for plotting.
 """
 
-np.savez("output/fine_e6_density.npz",npoints=npoints,s0=s0,s1=s1,kap=kap,nu=nu,means=means,sdevs=sdevs,pct_sdevs=pct_sdevs)
+np.savez("output/ordered_e6_density.npz",npoints=npoints,s0=s0,s1=s1,kap=kap,nu=nu,means=means,sdevs=sdevs,pct_sdevs=pct_sdevs)
 
 
