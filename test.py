@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 import numpy as np
-import vegas_minima as vmin
+import integrate
 from prettytable import PrettyTable
 from tqdm import tqdm
 
@@ -27,8 +27,8 @@ s0=2.0
 s1=2.0
 kap=2.0
 
-nsamples=20
-nu=np.linspace(1,2,nsamples)
+nsamples=40
+nu=np.linspace(0.1,2,nsamples)
 
 npoints=1e6
 
@@ -43,6 +43,7 @@ sdevs=np.zeros(nsamples)
 true_vals=np.zeros(nsamples)
 
 pct_sdevs=np.zeros(nsamples)
+errs=np.zeros(nsamples)
 abs_errs=np.zeros(nsamples)
 pct_errs=np.zeros(nsamples)
 
@@ -51,13 +52,14 @@ Run the vegas algorithm over varying nu.
 """
 
 for samp in tqdm(range(nsamples)):
-	ret = vmin.calculate_density(nu[samp],s0,s1,kap,npoints)
+	ret = integrate.integrate(nu[samp],s0,s1,kap,npoints,ordered=True,test=True)
 	means[samp]=ret[0]
 	sdevs[samp]=ret[1]
 
 	true_vals[samp]=truint(nu[samp],s0,s1)
 
 	pct_sdevs[samp] = abs(100.0*(sdevs[samp])/means[samp])
+	errs[samp] = (means[samp]-true_vals[samp])
 	abs_errs[samp] = abs(means[samp]-true_vals[samp])
 	pct_errs[samp] = abs(100.0*(means[samp]-true_vals[samp])/true_vals[samp])
 
@@ -66,25 +68,41 @@ for samp in tqdm(range(nsamples)):
 Format an output table for spot-checking!
 """
 
-t = PrettyTable(['Nu','Means','True','Sdev','PctSdev','AbsErr','PctErr'])
+t = PrettyTable(['Nu','Means','True','Sdev','PctSdev','Err','AbsErr','PctErr'])
 
 for i in range(len(nu)):
 	rowstrs=[]
 	rowstrs.append('{:06.4f}'.format(nu[i]))
 	rowstrs.append('{:06.4f}'.format(means[i]))
-	rowstrs.append('{:06.4f}'.format(sdevs[i]))
 	rowstrs.append('{:06.4f}'.format(true_vals[i]))
+	rowstrs.append('{:06.4f}'.format(sdevs[i]))
 	rowstrs.append('{:06.4f}'.format(pct_sdevs[i]))
+	rowstrs.append('{:06.4f}'.format(errs[i]))
 	rowstrs.append('{:06.4f}'.format(abs_errs[i]))
 	rowstrs.append('{:06.4f}'.format(pct_errs[i]))
 	t.add_row(rowstrs)
 
 print t
 
+
+"""
+Calculate Chi2
+"""
+
+def chi2_el(mynu,mymean,mysig):
+    return ((truint(mynu,s0,s1)-mymean)/mysig)**2
+
+chi2_f=np.vectorize(chi2_el)
+chi2=(1.0/float(len(nu)))*np.sum(chi2_f(nu,means,sdevs))
+print "CHI2: ",chi2
+
+
+
+
 """
 Write these arrays out to an npz file for plotting.
 """
 
-np.savez("output/e6_pos_expectation_test.npz",npoints=npoints,s0=s0,s1=s1,kap=kap,nu=nu,means=means,sdevs=sdevs,true_vals=true_vals,pct_sdevs=pct_sdevs,abs_errs=abs_errs,pct_errs=pct_errs)
+np.savez("output/test_ordered_e6.npz",npoints=npoints,s0=s0,s1=s1,kap=kap,nu=nu,means=means,sdevs=sdevs,true_vals=true_vals,pct_sdevs=pct_sdevs,errs=errs,abs_errs=abs_errs,pct_errs=pct_errs)
 
 

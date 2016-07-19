@@ -41,6 +41,9 @@ truey=truef_vec(truex,s0,s1)
 
 axes=[]
 
+
+
+
 axes.append(plt.subplot2grid((4,4),(1,0),rowspan=3,colspan=4))
 axes[0].errorbar(nu,means,yerr=sdevs,marker="o",color='black',linestyle='None',lw=1.0,label="Vegas: "+'{:02.0e}'.format(int(npoints)))
 axes[0].plot(truex,truey,ls='-',lw=1.5,color='red',label="Analytic: Guth")
@@ -114,6 +117,16 @@ print textstr
 #axes[0].text(0.415, 0.2375, textstr, transform=axes[0].transAxes, fontsize=18,verticalalignment='top', bbox=props)
 axes[0].text(0.035, 0.95, textstr, transform=axes[0].transAxes, fontsize=18,verticalalignment='top', bbox=props)
 
+"""
+Calculate Chi2
+"""
+
+def chi2_el(mynu,mymean,mysig):
+	return ((truint(mynu,s0,s1)-mymean)/mysig)**2
+
+chi2_f=np.vectorize(chi2_el)
+chi2=(1.0/float(len(nu)))*np.sum(chi2_f(nu,means,sdevs))
+print "CHI2: ",chi2
 
 plt.show()
 #print sp.AtmosphericNeutrinoOscillationProbability(1,1,100*param.GeV,param.PI,param)

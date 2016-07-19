@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 import numpy as np
-import minima_density as dmin
+import integrate 
 from prettytable import PrettyTable
 from tqdm import tqdm
 
@@ -39,7 +39,7 @@ Run the vegas algorithm over varying nu.
 """
 
 for samp in tqdm(range(nsamples)):
-	ret = dmin.calculate_density(nu[samp],s0,s1,kap,npoints)
+	ret = integrate.integrate(nu[samp],s0,s1,kap,npoints,ordered=True,test=False)
 	means[samp]=ret[0]
 	sdevs[samp]=ret[1]
 

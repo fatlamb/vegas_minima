@@ -2,26 +2,26 @@
 
 import pyximport; pyximport.install()
 import vegas
-import minima_integrand as MI
-import minima_integrand_unordered as MIU
+import integrand as INT
+import integrand_unordered as INTU
 import numpy as np
 #import time
 
-def calculate_density(nu,s0,s1,kap,npoints,ordered=True,test=False):	
+def integrate(nu,s0,s1,kap,npoints,ordered=True,test=False):	
 	pi=np.pi
 	
 	if ordered==True:
-		f = MI.f_cython(dim=6,nu=nu,s0=s0,s1=s1,kap=kap)
+		f = INT.f_cython(dim=6,nu=nu,s0=s0,s1=s1,kap=kap)
 		multiplicity_prefac=1.0
 	if ordered==False:
-		f = MIU.f_cython(dim=6,nu=nu,s0=s0,s1=s1,kap=kap)
+		f = INTU.f_cython(dim=6,nu=nu,s0=s0,s1=s1,kap=kap)
 		multiplicity_prefac=1.0/6.0
 
 	if test==True:
-		domain=[[0,pi/2],[0,pi/2],[0,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2]]
+		domain=[[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2]]
 		density_prefac=1.0
 	if test==False:
-		domain=[[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2]]
+		domain=[[0,pi/2],[0,pi/2],[0,pi/2],[-pi/2,pi/2],[-pi/2,pi/2],[-pi/2,pi/2]]
 		density_prefac= (3.0*np.sqrt(6.0)*nu*np.exp(-nu**2/2.0))/(4.0*np.pi**(3.0/2.0)*s1**3)
 		
 	integ = vegas.Integrator(domain, nhcube_batch=1000)
@@ -42,7 +42,7 @@ def calculate_density(nu,s0,s1,kap,npoints,ordered=True,test=False):
 
 	
 	retlist = [result.mean,result.sdev]
-	for x in retlist:
-		x*=density_prefac*multiplicity_prefac
+	for x in range(len(retlist)):
+		retlist[x]*=density_prefac*multiplicity_prefac
 
 	return retlist
