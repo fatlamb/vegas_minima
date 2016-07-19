@@ -169,7 +169,7 @@ The integral becomes, on change-of-variables:
 
 The new integrand has a homogeneous polynomial in its exponent, and will therefore yield to the same separation as \ref{eq:multigaus}.
 
-\section{Lambdas First} \label{lambdasec}
+\subsection{Lambdas First} \label{lambdasec}
 
 With these techniques in hand, let us examine our density integral, ~\ref{eq:allspace_integral} and it's exponenet, ~\ref{eq:Q2}. The first thing to notice is that $Q_2$ is quadratic in $\lambda$, but quartic in $\eta$. Since the gaussian tricks above do not apply to a quartic polynomial, there is no obvious way to proceed in 6 dimensions. This roadblock suggests that we try one of the 3 dimensional subspaces (one accorded to the the three $\lambda$ and the other to the three $\eta$), treating variables from the other as constants. Since the $\lambda$ only appear to order 2, let's start there. Treating the $\eta$ as constants, $Q_2$ is an inhomogeneous polynomial of order 2 in $\eta$, and so should be ammenable to the diagonal separation from above.
 \par Indeed, it is possible to diagonalize the matrix which generates this polynomial, and to change variables to the eigenbasis. Unfortunately, we are only interested in field minima, and so our $\lambda$ integrals are not taken over all space. To simplify the limits of integration, we can forget the ordering of $\lambda_i$ and simply integrate each $\lambda$ over $[0,\infty)$. If we were integrating in only one $\lambda$ dimension, we could cast the integral as an evaluation of the gamma function:
@@ -269,8 +269,182 @@ In preparing our integral for diagonalization, we have fallen into the same nest
 
 As a last-ditch attempt to salvage this integration technique, one might consider the $64 (\tilde{v}_1 + w_1)(\tilde{v}_2 + w_2)(\tilde{v}_2 + w_2))^{-1/2}$ factor as a handle for contour integration in the complex plane. Unfortunately, although this jacobian factor does have singularities in each $\tilde{v}_i$ plane, and the complementary factor is an entire function, these singularities are not poles, but rather boundaries of branch cuts. Without any poles, it does not appear to be possible to do contour integration.
 
-\subsubsection{Tensor Contraction}
+\subsubsection{Multilinear Forms}
 
+In our efforts to write order 2 polynomials as inner products of vectors across some $\Sigma^{-1}$ matrix, we have been making implicit use of a bijective relationship between quadratic homogeneous (all terms have the same total order) polynomials in $n$ variables and inner products of the form: $\vec{x}^T \operatorname{\Sigma}^{-1} \vec{x}$ where $\operatorname{\Sigma}^{-1}$ is a symmetric matrix. Such matrices, in this context, are representations of a map of a tensor product of vector spaces onto their underlying field: $F: V \otimes V \rightarrow \mathbb{R}$ (the reals, in our case). The motivation for this point of view is that it can be generalized to multi-linear forms, which are capable of mapping tensor products of more than two vector spaces onto homogeneous polynomials of arbitrary degree. These multi-linear forms have representations as tensors, and in the case of symmetric tensors, there is, once again, a bijection between homogeneous polynomials of degree $k$ and symmetric tensors of order $k$. The connection is made clearer when these tensors are used as multilinear forms to map elements of the vector space: $V^{\otimes k}$ onto $\mathbb{R}$. To visualize the generalization, let's begin with the order-2 (matrix case).
+
+Let $\mathcal{P}_2(x)$ be a homogeneous polynomial of order 2, where $x\in V_2(\mathbb{R})$, which is to say x is a vector in a real vector space of dimension $2$.
+
+Generally:
+
+$$ \mathcal{P}_2(x) =  \alpha x_1^2 + \beta x_1 x_2 + \gamma x_2^2 $$
+
+The standard (euclidean) inner product, which is a bilinear form represented here as the identity on $V_2(\mathbb{R})$, will produce the following polynomial:
+
+$$ \sum_{i,j} \mathds{1}_{ij} x_i x_j = x_1^2 + x_2^2$$
+
+So, if we want to be able to generate cross-terms, and to apply to each term an arbitrary prefactor (to produce more general polynomials), we need to replace $\mathds{1}$ with a more general matrix. In this case, to generate any $\mathcal{P}_2(x)$, we can use the matrix:
+
+
+\[M = \left(\begin{array}{ccc}
+\alpha & \beta/2 \\
+\beta/2 & \gamma \\
+\end{array} \right)\] 
+
+Employing $M$ as a bilinear form, we find:
+
+\begin{equation} \label{eq:bilinear_form}
+\mathcal{P}_2(x) =  \sum_{i,j} M_{ij} x_i x_j = \alpha x_1^2 + \beta x_1 x_2 + \gamma x_2^2 
+\end{equation}
+
+
+What if we want to work with higher-degree polynomials (as in the quartic $\eta$ case)?
+The above correspondence suggests a relationship between symmetric multilinear forms (represented as order-$k$ tensors) and homogeneous polynomials of degree $k$. Indeed, there is a bijection between these two classes of mathematical objects (FIXME CITE SYMMETRIC):
+
+\begin{equation} \label{eq:multilinear_form}
+\mathcal{P}_k(x) =  \sum_{i_1...i_k} M_{i_1...i_k} x^{i_1}...x^{i_k}
+\end{equation}
+
+Where the requirement that $M$ is a symmetric tensor translates into the statement that M, represented in some set of indices, is invariant under a permutation of a particular index-vector:
+
+$$ M_{i_1...i_k} = M_{\sigma(i_1,...,i_k)}$$
+
+Where $\sigma()$ is any element of the permutation group of $k$ elements.
+
+Which is an elegant formulation, but what is the application to our $\eta$ integration?
+
+We were able to decouple the integrals in the gaussian case by diagonalizing the matrix representation of a symmetric bilinear form, $\Sigma^{-1}$ (\ref{eq:multigaus}) and changing variables accordingly, might it be possible to ``diagonalize'' the tensor representation of the quartic form in $\eta$ and change variables in the $\eta$ vector space to decouple the integral into a product of integrals, each of which could perhaps be turned into an evaluation of the gamma function?
+
+Let us, for the time being, neglect the inhomogeneous terms in the $Q_2$ polynomial (it may be possible to perform a trick like that which was done in the gaussian case to kill the linear terms), and consider the homogeneous case.
+
+As it happens, symmetric tensors do admit a ``diagonal'' decomposition, sometimes called the \textit{Waring decomposition}. Let $T$ be a tensor of order $k$, then there exist $v_i\in V_k(\mathbb{R})$ such that:
+
+\begin{equation} \label{eq:waring}
+T = \sum_{i=1}^r \lambda_i v_i^{\otimes k}
+\end{equation} 
+
+This is, essentially, an eigenvalue/eigen-(rank-1)tensor decomposition.
+
+Recall that our homogeneous polynomial, $\mathcal{P}_4(\eta)$ has representation:
+
+\begin{equation} \label{eq:etaform}
+\mathcal{P}_4(\eta) =  \sum_{i_1...i_k} T_{i_1...i_k} \eta^{i_1}...\eta^{i_k}
+\end{equation}
+
+$T$ is symmetric and order-$4$, so this can be written:
+
+\begin{equation} \label{eq:etaform_eigen}
+\mathcal{P}_4(\eta) =  \sum_{i_1...i_k} \left(\sum_{\alpha=1}^r \lambda_{\alpha} v_{\alpha}^{\otimes k}\right)_{i_1...i_k} \eta^{i_1}...\eta^{i_k}
+\end{equation}
+
+As a reminder, $i_l$ is the $l$th index of both the $\eta$ tensor we're contracting with $T$, and the $v_i^{\otimes k}$ eigentensor of $T$. But, because both the $\eta$ and $v$ tensors are k-th tensor products of a single vector, $\eta$ and $v_i$ respectively, they have simple forms in index notation:
+
+\begin{gather*}
+\left(\eta^{\otimes k}\right)^{i_1...i_k} = \eta^{i_1}...\eta^{i_k} \\ 
+\left(v_{\alpha}^{\otimes k}\right)^{i_1...i_k} = v_{\alpha}^{i_1}...v_{\alpha}^{i_k} \\
+\end{gather*}
+
+So we may rewrite \ref{eq:etaform_eigen}, exchanging summations:
+
+\begin{equation} \label{eq:etaform_eigen}
+\mathcal{P}_4(\eta) =  \sum_{\alpha=1}^r \lambda_{\alpha} \sum_{i_1...i_k} \left(v_{\alpha}\right)_{i_1}...\left(v_{\alpha}\right)_{i_k} \eta^{i_1}...\eta^{i_k}
+\end{equation}
+
+Notice that the innermost summand is simply a power of inner products!
+Exploiting a combination of standard and Einstein summation notations:
+
+
+\begin{equation} \label{eq:etaform_eigen_niii}
+\mathcal{P}_4(\eta) =  \sum_{\alpha=1}^r \lambda_{\alpha} \left(\left(v_{\alpha}\right)_i\eta^i\right)^4
+\end{equation}
+
+And this can be written in the form:
+
+\begin{equation} \label{eq:etaform_eigen_niii}
+\mathcal{P}_4(\eta) =  \delta_{\alpha \beta \gamma \delta} \left(\left(\Lambda^{1/4}\right)^{\alpha}_{j} W^{j}_i\eta^i\right)\left(\left(\Lambda^{1/4}\right)^{\beta}_{j} W^{j}_i\eta^i\right)\left(\left(\Lambda^{1/4}\right)^{\gamma}_{j} W^{j}_i\eta^i\right)\left(\left(\Lambda^{1/4}\right)^{\delta}_{j} W^{j}_i\eta^i\right)
+\end{equation}
+
+Where:
+
+\[W = \left(\begin{array}{c}
+\vec{v_1} \\
+\vec{v_2} \\
+\vec{v_3} \\
+\vec{v_4} \\
+\end{array} \right)\] 
+
+And
+
+\[\Lambda = \left(\begin{array}{cccc}
+\lambda_1 & 0 & 0 & 0 \\
+0 & \lambda_2 & 0 & 0 \\
+0 & 0 &\lambda_3 & 0 \\
+0 & 0 & 0 & \lambda_4 \\
+\end{array} \right)\] 
+
+
+Finally, we have arrived at our diagonal destination. With the variable change:
+
+$$ \vec{u} = \Lambda^{1/4} W \vec{\eta} $$
+
+The polynomial $\mathcal{P}_4(\eta)$ becomes:
+
+\begin{equation} \label{eq:etaform_eigen_niii}
+\mathcal{P}_4(\eta) =  \delta_{\alpha \beta \gamma \delta} u^{\alpha} u^{\beta} u^{\gamma} u^{\delta} = u_1^4 + u_2^4 + u_3^4 + u_4^4
+\end{equation}
+
+This appears to be cause for celebration, as the integral would now be seperable, and (crucially) the limits are still full real lines for each $\eta$, so the variable change will not introduce any of this parallelogram nonsense. However, there are two snags which I have not overcome.
+
+The first is the question of how to remove the quadratic terms to homogenize this polynomial. I have some ideas, but have not yet been able to clarify the procedure (it might not be do-able: this needs investigation).
+
+The second snag is more fundamental, and, if solvable, will require serious mathematical gymnastics.
+
+Earlier, when introducing the Waring tensor decomposition \ref{eq:waring}, I slipped something under the radar. In the order-2 case, the waring decomposition for a real symmetric tensor is the diagonal decomposition for a real symmetric matrix. We are guaranteed that the number of eigen-tensors in the decomposition sum (tensor products of the eigen-vectors in the matrix case, call this number $r$) is exactly equal to the dimension of the underlying vector space ($k$).
+
+This decomposition, in tensor notation, looks like this:
+
+\begin{equation} \label{eq:waring-o2}
+T = \sum_{i=1}^d \lambda_i v_i^{\otimes 2}
+\end{equation} 
+
+Where $v_i \in V_d(\mathbb{R})$.
+
+But the crucial difference between this special case and the Waring decomposition is that $r=d$. There are never more terms in the decomposition than there are dimensions in the underlying vector space $V_d(\mathbb{R})$. However, in higher-order decompositions, the rule is: $r\geq d$. And if there are more terms in the decomposition than there are dimensions in the vector space: A) the $v_i$ cannot be linearly independent, and B) we cannot write down $W$ as a 3-by-3 matrix. It would appear that we need another $\eta$ dimension to effect the change of variables. I don't know if it's possible to embed our $\eta$ integral in a higher dimensional integral and then extract the 3-d integral after the fact.
+
+Unfortunately, I think this isn't possible (though this needs to be checked), because building the $W$ matrix out of linearly dependent rows will cause it to have a rank less than $r$, which, in an $r$ by $r$ matrix, implies determinant zero, and the change of variables is not invertible, and therefore invalid. Although, it is possible that in some higher dimensional space, $r=d$, and the construction is valid.
+
+ Furthermore, in the order-2 case, the real spectral theorem guarantees that these vectors are mutually orthogonal, so that the $W$ matrix is an orthogonal operator. It is not obvious to me that, even if $r=d$, there is still a spectral theorem for these decompositions. The jacobian of the transformation will therefore introduce a nasty function of the $u_i$ in front of the exponential. 
+
+ Moving forward along this line of thinking will probably require a thorough literature search, beginning with FIXME REF SYMMETRIC.
+
+
+
+
+
+
+
+
+
+
+
+%\ref{eq:etaform_eigen} has an evil look about it, so let's consider the order-2 (matrix) case:
+
+%\begin{equation} \label{eq:etaform_o2}
+%\mathcal{P}_4(\eta) =  \sum_{\alpha=1}^r \lambda_{\alpha} \sum_{i_1,i_2} \left(v_{\alpha}\right)_{i_1}%%%\left(v_{\alpha}\right)_{i_2} \eta^{i_1}eta^{i_2}
+%\end{equation}
+
+%Writing this in Dirac notation, we see a familiar face of the eigen-decomposition!
+
+
+%\begin{equation} \label{eq:etaform_dirac}
+%\sum_{\alpha=1}^r \lambda_{\alpha} \sum_{i_1,i_2} \left(v_{\alpha}\right)_{i_1}\left(v_{\alpha}\right)_{i_2} %\eta^{i_1}\eta^{i_2} = \bra{\eta} \left(\sum_{\alpha=1}^r \ket{v_{\alpha}} \lambda_{\alpha} \bra{v_\alpha} %\right) \ket{\eta} = \bra{\eta} T \ket{\eta}
+%\end{equation}
+
+%The analogy to the order-2 case guides our next step. 
+
+\section{A Numerical Solution}
+
+\subsection{•}
 
 
 
@@ -278,6 +452,31 @@ As a last-ditch attempt to salvage this integration technique, one might conside
 
 
 %BIB
+
+
+%@article{doi:10.1137/060661569,
+%author = {Pierre Comon and Gene Golub and Lek-Heng Lim and Bernard Mourrain},
+%title = {Symmetric Tensors and Symmetric Tensor Rank},
+%journal = {SIAM Journal on Matrix Analysis and Applications},
+%volume = {30},
+%number = {3},
+%pages = {1254-1279},
+%year = {2008},
+%doi = {10.1137/060661569},
+
+%URL = { 
+%        http://dx.doi.org/10.1137/060661569
+%    
+%},
+%eprint = { 
+%%        http://dx.doi.org/10.1137/060661569
+%   
+%}%
+%
+%}
+
+
+
 
 %@article{doi:10.1080/03610918008812164,
 %author = {   D. B.   Owen },
