@@ -6,6 +6,8 @@
 \usepackage{braket}
 \usepackage{dsfont}
 \usepackage{tcolorbox}
+\usepackage{graphicx}
+\usepackage{placeins}
 \usepackage[a4paper, margin=1in]{geometry}
 
 \newcommand{\red}{\color{red}}
@@ -95,7 +97,7 @@ In \ref{eq:allspace_integral}, the integral is taken over $\mathbb{R}^3$ in $\et
 
 Only after choosing such an ordering of eigenvalues can one guarantee unique``diagonal'' decomposition of the hessian into a product of $SO(3)$ matrices and eigenvalues. Without this ordering in place, there is a multiplicity factor of $\frac{1}{3!}$ that appears in front of the integral.
 
-\section{Attempts at an Analytic Solution}
+\section{Attempts at an Analytic Solution} \label{analytic}
 
 \subsection{Multivariate Gaussian Integrals}
 
@@ -442,10 +444,187 @@ Unfortunately, I think this isn't possible (though this needs to be checked), be
 
 %The analogy to the order-2 case guides our next step. 
 
-\section{A Numerical Solution}
+\section{A Numerical Solution} \label{numsol}
 
-\subsection{•}
+\subsection{Monte Carlo Integration}
 
+It appears that (for now), analytic integration of either 3-space ($\vec{\eta}$ or $\vec{\lambda}$) is intractable. Instead, we will resort to numerical integration. In roughly 1 to 3 dimensions, the way to integrate is with quadrature rules treating the N-volume integral as N integrals over intervals of the real line. Unfortunately, the errors from these approximation methods, though manageable in one or two dimensions, increase rapidly with the number of layers in this nested integral. To compute multi-dimensional integrals (6, in our case) to a specified error tolerance in a reasonable amount of time requires an altogether different approach.
+
+The technique we will explore is called monte-carlo integration, and it exploits the law of large numbers.
+Stated without much rigor, the law of large numbers relates sample averages of draws from a random distribution to its expected value.
+
+Let:
+
+$$\bar{X} = \displaystyle{\frac{1}{N}} \sum_{i=1}^N X_i$$
+
+be the sample average, where $X_i$ are samples of a random variable $x$ disributed according to some distribution with pdf $f(x)$.
+
+If this pdf is well behaved (integrable, for our intents and purposes), then we may also define the expectation value:
+
+$$\lbrace x \rbrace = \int_{D} \d x x f(x)$$
+
+Where $D$ is the domain in which $f(x)$ is supported.
+
+The law of large numbers says (roughly) that $\bar{x} \rightarrow \langle x \rangle$ as $N \rightarrow \infty$.
+
+Now, this law also applies to expectation values of functions of a random variable, so that:
+
+\begin{equation} \label{eq:largen_func}
+\displaystyle{\frac{1}{N}} \sum_{i=1}^N g(X_i) \rightarrow \int_{D} \d x g(x) f(x) | N \rightarrow \infty
+\end{equation}
+
+This suggests that we can approximate the integral $\int_{D} \d x g(x) f(x)$ by drawing samples $X_i$ from a distribution $f(x)$, calculating $g(X_i)$, and summing the results. This approximation is the essence of monte carlo integration.
+
+Of course, such an approximation is not terribly useful without an error estimate. We may approximate the standard error on the mean (which will be the standard error in our approximation of the expected value by the sample averate) by: $s_g / \sqrt{N}$, where $s_g$ is an unbiased estimate of the standard deviation of $g(x)$: $\sigma_g$, using our $N$ samples $g(X_i)$.
+Three things happen as N becomes large. The first, which is a consequence of the law of large numbers, is that $s_g \rightarrow \sigma_g$, so our approximation of the standard error approaches the true standard error.
+The second allows an interpretation of the standard error according to a normal distribution. This is where the central limit theorem comes into play. Again, provided with neither proof nor rigorous language, this theorem states that the distribution of the arithmetic mean of an arbitrary number of independent samples of an arbitrary distribution will approach a normal distribution as the number of samples becomes large. This allows us to interpret the standard error in a statistical sense: ``If  we repeat our monte carlo integration a large number of times, we expect the true value of the integral to lie within $\pm \sigma_g$ of our approximation in roughly 68\% percent of trials''
+The third effect, which is immediately obvious, is that the standard error (which we now see is not a strict upper bound on the error, but rather a statistical bound) decreases as $1/\sqrt{N}$.
+This decreasing error is the true strength of monte carlo methods. While quadrature methods (with strict error bounds) may exhibit errors that decrease more quickly with N (the number of iterations) in few dimensions, the decrease becomes slower and slower in more dimensions. The monte carlo scaling, on the other hand, does not depend on the number of dimensions, and is therefore ideal for many-dimensional integration (although the error bound could still be terrible in an absolute sense, if $\sigma_g$ is large, this does not impact the scaling w/r/t $N$).
+
+\subsection{The Metropolis Method}
+
+FIXME add a moving tale of hope, disappointment, and loss w/r/t the Metropolis method.
+
+
+\subsection{The Vegas Algorithm}
+\par Naively, if we wanted to do a monte carlo integration in an arbitrary number of dimensions ($N$) on the following integral:
+
+$$\int_{D} \d^N x g(\vec{x})$$
+
+We would simply draw $X_i$ from the uniform distribution over $D$. This is a simple approach, but it may take a long time to reach some desired error tolerance beacuse $\sigma_g$ could be large, requiring large $N$ to compensate. Intuitively, we can imagine a bumpy surface (to keep it simple, imagine a scalar surface over a two dimensional domain) and a process for picking points over its domain. Each time a point is picked, it is evaluated, resulting in a little dot on the surface at that value. If we pick points with equal frequency in the valleys and the mountains of this surface, we are, in a sense wasting time. The valleys will contribute little to the sum, so we would be better served by picking points in regions of our domain that support mountains more frequently than in those that support valleys. There are two ways to achieve this, both of which are explained in (FIXME CITE NR). To these explanations I will likely not do justice, although hopefully I can provide an intuitive cartoon.
+
+The first technique is called \textit{stratified sampling}. The idea here is to partition the sampling domain, and to assign a number of samples to each subdomain according to the variance of the function within that subdomain. Of course, the variance is usually not known ahead of time, so this technique is applied iteratively. For example, one could generate a grid partition of the domain and assign a set number of samples to each subdomain. The variance could be estimated in each subdomain by evaluating the samples, and then the size of each subdomain could be adjusted in inverse proportionality to the variance of the first step. This process is then repeated, so the subdomains tighten around mountains and broaden around valleys, minimizing the variance within each subdomain. The sum of the estimate of the function variance within each subdomain will then provide an estimate of the variance over the entire domain. By reducing the variance in each subdomain, the total variance can be minimized. (FIXME sum-of-squares argument)
+
+The second technique is known as \textit{importance sampling}. Importance sampling is essentially a change of probability measure under the integral:
+
+\begin{equation} \label{eq:importance}
+\int_{D} \d^N x g(\vec{x}) \rightarrow \int_{D} \d^N x \displaystyle{\frac{g(\vec{x})}{f(\vec{x})}} f(\vec{x})
+\end{equation}
+
+This can then be approximated by sampling $X_i$ according to the disribution $f(x)$ and summing $\frac{g(\vec{X_i})}{f(\vec{X_i})}$. If $f(x)$ is similar in shape to $g(x)$, then the division will flatten out mountains and valleys, and reduce overall function variance, reducing $\sigma_g$. $f(x)$, of course, must be a valid, normalized pdf, and the optimal $f(x)$ is given by: $\frac{|g|}{G}$ Where G is the volume-integral of $|g|$, required for normalization (FIXME cite NR). Of course, this requires foreknowledge of a volume integral very similar to the one we're trying to find in the first place, so this form usually isn't helpful.
+What can be done, without foreknowledge, is to begin by sampling uniformly from the domain supporting $g$, laying down a grid, and building a discrete approximation to the function on these grid cubes. This discrete approximation can then be normalized with a simple sum, and used to perform importance sampling on the next iteration. In this way, the discrete $f$ approximates the shape of $g$ more finely with each iteration, reducing variance.
+
+The Vegas algorithm implements both of these techniques (though the details of the implementation are more complicated than these intuitive descriptions, for details, see (FIXME CITE NR)) to adaptively estimate an integral, reducing the variance at each iteration. The basic strategy is to run a first series of iterations on an integrand, throwing away the integral estimates, but keeping the subdomain layout and importance function estimates which are refined with each step. This is somewhat like the ``burn-in'' period for a markov chain monte carlo technique. After the variance has settled down (the exact threshold for ``settlement'' is not set in stone), one then runs another sequence, with or without adaptive iteration, and stores the weighted average of the integral estimates and the associated error estimate.
+
+It is this algorithm that was finally chosen to attack our 6-dimensional minimum-density integral.
+
+FIXME cite python package!
+
+\section{Slaying the Chimera: Results from Numerical Integration} \label{results}
+
+Ultimately, the goal of this work is to calculate the expected density of field minima: 
+
+$$\left\langle \frac{\partial n_{2,min}}{\partial \nu} \right\rangle = \displaystyle{\frac{3 \sqrt{6} \nu e^{-\nu^2/2}}{4 \pi^{3/2} \sigma_1^3}} \expect{\lambda_1 \lambda_2 \lambda_3 \Theta(\lambda 3)}_{Q_2}$$
+
+This integral does not appear to yield to attempts at analytic solution, so we have chosen the Vegas algorithm to approximate it numerically.
+
+As mentioned in the descriptions of numerical integration techniques, each approach was vetted by calculation of a ``toy integral'' with an integrand similar to the full density integrand, in order to gauge performance. This toy integral is the signed number density of stationary points, which was evaluated analytically in (FIXME CITE) by Professor Guth and Saarik Kalia:
+
+\begin{equation} \label{eq:toyint}
+\expect{\lambda_1 \lambda_2 \lambda_3}_{Q_2} = \displaystyle{- \frac{\sigma_1^6 (\nu^4 - 6\nu^2 +3)}{27 \nu \sigma_0^3}}
+\end{equation}
+
+As mentioned in Section \ref{numsol}, the Vegas algorithm was the only technique which managed to produce approximations with error estimates that reliably described the true error w/r/t the analytic solution. Once it became clear that Vegas was the victor, the next order of business was to demonstrate that this integration technique was capable of producing estimates with sub-percent errors. 
+
+The vegas algoritm was run on the toy integral with simple values of $\sigma_1=2$, $\sigma_2=2$, and $\kappa=2$ chosen not to correspond to any real power spectrum, but out of convenience. The algorithm was run with increasing sample resolutions of $10^4$, $10^5$, and $10^6$ samples per iteration, and the results are plotted in Figures \ref{fig:toy_e4_wide}, \ref{fig:toy_e5_wide}, and \ref{fig:toy_e6_wide}; respectively.
+
+Notice that the absolute error is decaying with increasing resolution (as expected), but also that the $Chi_^2/d.o.f.$ value for $10^4$ samples per iteration is disturbingly distant from unity. This is likely a consequence of the law of large numbers as applied to the sample variance. Near $\nu$ = 0, $Q_2$ appears to vary rapidly. With few samples, the sample estimate of variance at small $\nu$ is likely underestimating the true variance, which leads to an underestimate of the error in the integral mean, which leads to a poor ``goodness of fit''. This improves with increasing numbers of samples, which is consistent with the tendency of the sample variance toward the true variance as $N \rightarrow \infty$. According to the analytic formulation of this integral (\ref{eq:toyint}), there is a singularity at $\nu=0$. Hopefully, there will be no singularities in the true density integral, so it is not profitable at this point to critique the performance of the integral at extremely small $\nu$.
+
+\FloatBarrier
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/toy_int_e4_wide.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^4$ samples per iteration.}
+\label{fig:toy_e4_wide}
+\end{figure}
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/toy_int_e5_wide.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^5$ samples per iteration.}
+\label{fig:toy_e5_wide}
+\end{figure}
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/toy_int_e6_wide.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^6$ samples per iteration.}
+\label{fig:toy_e6_wide}
+\end{figure}
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/toy_pcterr_e4.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^6$ samples per iteration.}
+\label{fig:toy_pcterr_e4}
+\end{figure}
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/toy_pcterr_e5.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^6$ samples per iteration.}
+\label{fig:toy_pcterr_e5}
+\end{figure}
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/toy_pcterr_e6.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^6$ samples per iteration.}
+\label{fig:toy_pcterr_e6}
+\end{figure}
+
+
+\FloatBarrier
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/cutoff_guide.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^6$ samples per iteration.}
+\label{fig:toy_e6_wide}
+\end{figure}
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/density_cutoff_compare_wide.eps} 
+\caption{KBAR:  2.0   MAXPCT:  0.00115592612476
+KBAR:  3.0   MAXPCT:  0.0117671906972
+KBAR:  4.0   MAXPCT:  0.0453885401547
+KBAR:  5.0   MAXPCT:  0.166640370797
+KBAR:  6.0   MAXPCT:  0.341659925564
+}
+\label{fig:toy_e6_wide}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/ordercomp_e4.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^6$ samples per iteration.}
+\label{fig:ordercomp_e4}
+\end{figure}
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/ordercomp_e5.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^6$ samples per iteration.}
+\label{fig:ordercomp_e5}
+\end{figure}
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/ordercomp_e6.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^6$ samples per iteration.}
+\label{fig:ordercomp_e6}
+\end{figure}
+
+\begin{figure}[t] %The capital H inside the square brackets is what forces the image to go exactly where I've placed in in the text. You need to be using the float package for this to work. 
+\centering %I've put the centering command here so that the image appears centered on the page. 
+\includegraphics[scale=0.45]{images/spectraplot.eps} 
+\caption{Test integrations of the toy integral (\ref{eq:toyint}) and its analytic value at varying field heights. $10^6$ samples per iteration.}
+\label{fig:spectraplot}
+\end{figure}
 
 
 
