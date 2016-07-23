@@ -10,6 +10,7 @@
 \usepackage{placeins}
 \usepackage[a4paper, margin=1in]{geometry}
 
+
 \newcommand{\red}{\color{red}}
 \newcommand{\blue}{\color{blue}}
 \newcommand{\magenta}{\color{magenta}}
@@ -55,38 +56,47 @@
 
 \section{Background}
 
-In a series of three write-ups FIXME CITE, Professor Guth (and earlier, Saarik Kalia) has written down integral formulations of the expected spatial number density of both minima and stationary points in a sum-of-squares gaussian field ($\Phi = \phi_1 + \phi_2$). The general tactic is similar to the approach in BBKS (FIXME cite bbks). The integrand contains a delta function in the gradient of $\Phi$ and a delta function enforcing the constraint that $\phi_1$ attain a value some number of standard deviations away from the field mean (zero): $\phi_1 = \nu \sigma_0$, where $\sigma_0$ is the standard deviation in $\phi_1$. Additionally, the function contains a factor of the determinant of the hessian matrix of $\Phi$ to compensate for the Jacobian factor from the delta-gradient integration. Cancelling out the Jacobian forces the delta function to contribute a value of $\pm 1$ whenever the gradient-delta fires at a stationary point. The sign of the contribution will be addressed shortly. Two central techniques are employed to beat the problem into a useful shape. The first is a rotation in field-space, which will remain an important method as the number of fields is increased. If one envisions $\phi_1$ and $\phi_2$ as the coeffiecients of a pair of orthonormal basis vectors in a plane, then the expression $\Phi = \phi_1^2 + \phi_2^2$ is invariant under rotations in this plane. Consequently, the fields can be rotated so that only $\bar{\phi}_1$ is non-zero, and the rotational invariance of our problem implies that the rotated coordinates are just as good as the original ones, so we are able to set $\bar{\phi}_2$ to zero, greatly simplifying our expression (though the gradient of $\phi_2$ is not generally zero, and will play a role in the calculation of the hessian matrix of $\Phi$. 
+In a series of three write-ups FIXME CITE, Professor Guth (and earlier, Saarik Kalia) has written down an integral formulation of the expected spatial number density of stationary points (and later, of minima) in a sum-of-squares gaussian field ($\Phi = \phi_1^2 + \phi_2^2$). Some of the tactics employed are similar to those used by BBKS to count minima in a single gaussian field (FIXME cite bbks). To count minima over one field configuration, one can employ \ref{eq:stationary_schematic}. This  integrand contains a delta function in the gradient of $\Phi$ to locate stationary points and a factor of the determinant of the hessian matrix of $\Phi$ to compensate for the Jacobian factor from the delta-gradient integration. Cancelling out the Jacobian forces the delta function to contribute a value of $\pm 1$ whenever the gradient-delta fires at a stationary point. The factor in the integrand of \ref{eq:stationary_schematic} which allows minima to be isolated from stationary points is the heaviside function, $\theta_H(\lambda_3^\Phi)$. $\lambda_3^{\phi}$ is the smallest eigenvalue of the hessian matrix, and can be considered an eigenvalue of curvature. Its positivity guarantees that all curvatures are ``concave up'', and the point is indeed a minimum. \ref{eq:stationary_schematic} is refined repeatedly in (Fixme writeups), but we will highlight only two central steps here. The first is a rotation in field-space, which will remain an important method as the number of fields is increased. Considering $\phi_1$ and $\phi_2$ as  coeffiecients of a pair of orthonormal basis vectors in a plane, the expression $\Phi = \phi_1^2 + \phi_2^2$ is clearly invariant under rotations in this plane, as it is simply the norm-squared of the corresponding vector. Consequently, the fields can be rotated so that only $\bar{\phi}_1$ is non-zero. Eventually, we will want to calculate the expected number density of peaks over all possible field configurations corresponding to a particular power spectrum, and so the spatial integrals in \ref{eq:stationary_schematic} will be replaced with integrals over all relevant field parameters (considering the integrand as a spatial density).The ensemble of field configurations is invariant under a rotation in field space, so when we take the expectation over all field configurations, we may consider the rotated fields as the fundamental fields ref writeup stationary). As a result, $\bar{\phi}_i \rightarrow \phi_i$, and $\phi_2 \rightarrow 0$, significantly simplifying our expression (though the gradient of $\phi_2$ is not generally zero, and will play a role in the calculation of the hessian matrix of $\Phi$. 
 
-\par The second technique is a transformation into the eigenbasis of the hessian matrix. This allows us to calculate in terms of curvature eigenvalues and rotation matrices (which constitute variable transformations of unit jacobian, and are therefore integral-friendly). Without descending into too much detail (which is nicely worked out in the write-ups), direct control of the eigenvalues allows us to restrict ourselves to minima (all positive eigenvalues), maxima (all negative), or arbitrary saddle-point mixtures. The physically interesting quantity is the number density of field minima, so we will integrate over the positive octant of [$\lambda_1, \lambda_2, \lambda_3$] space, where the lambdas are these curvature eigenvalues. Our density is independent of the rotation matrices which map this eigen-space onto our physical 3-space, so their euler angles integrate out trivially to a prefactor.
-\par The final step is to calculate the expectation of this density integral over all possible field configurations. We have boiled the density integral down to the value of $\phi_1$ ($\nu \sigma_0$), the hessian eigenvalues $\lambda_1$ - $\lambda_3$, and the gradient components of $\phi_2$: $\eta_1$ - $\eta_3$. Instead of integrating over 3-space to calculate the total number of minima, we will leave the spatial integrals off and instead integrate over the configuration parameters $\lambda_i$ and $\eta_j$, yielding an expectation of number density. Our field is gaussian, so the joint pdf of these 6 parameters is a multivariate gaussian with covariance matrix calculated in detail in FIXME cite. Putting all of this together yields the following formula from FIXME cite.
+\begin{equation}\label{eq:stationary_schematic}
+N = \int_{\cal R} \d^3 x \, \delta^3 (\partial_i \Phi ) \det
+     (\partial_i \partial_j \Phi ) \, \theta_H(\lambda_3^\Phi)
+\end{equation}
+
+
+
+\par Once the field-expectation integral is set up, the next step is to change variables from the cartesian parameterization of the hessian matrix into its diagonal parameterization. This change of variables allows us to explicity enforce the positivity of the $\lambda_i$ in the limits of integration (restricting us to field minima). The rotation matrices have jacobian 1, and are parameterized by three euler angles. The euler angles integrate out trivially to prefactors, and we find ourselves left with integrals in $\lambda_1$, $\lambda_2$, and $\lambda_3$ (as well as integrals over the gradient components of $\phi_2$). We will integrate over the positive octant of the $\lambda$ space, preserving the eigenvalue ordering.
+\par The integral has been boiled down to the value of $\phi_1$ (written as a deviation of $\nu$ standard deviations away from a zero field mean: $\phi_1 = \nu \sigma_0$), the three hessian eigenvalues $\lambda_i$, and the three gradient components of $\phi_2$: $\eta_i$. Our fields are gaussian, so the joint pdf of the 6 free parameters is a multivariate gaussian with covariance matrix calculated in detail in FIXME cite. Putting all of this together yields the following formula from FIXME cite.
 
 \begin{gather} \label{eq:allspace_integral}
-\expect{X}_{Q_2} = \frac{\displaystyle 30,375 \sigma_0^6}{\displaystyle 16 \sqrt{30} \pi^{5/2} \kappa^5 \sigma_1^{15}e^{-\nu^2/2} \sqrt{\kappa^2-1}} \times \int_{-\infty}^{\infty} \d \lambda_1 
+\begin{split}
+\expect{X}_{Q_2} &= \frac{\displaystyle 30,375 \sigma_0^6}{\displaystyle 16 \sqrt{30} \pi^{5/2} \kappa^5 \sigma_1^{15}e^{-\nu^2/2} \sqrt{\kappa^2-1}} \times \int_{-\infty}^{\infty} \d \lambda_1 
      \int_{-\infty}^{\lambda_1} \d \lambda_2 
      \int_{-\infty}^{\lambda_2} \d \lambda_3 (\lambda_1 -
      \lambda_2) (\lambda_1 - \lambda_3) (\lambda_2 - \lambda_3) \\
-     \times \intinf \d \eta_{3} 
+     &\qquad \times \intinf \d \eta_{3} 
      \intinf \d \eta_{2} 
-     \intinf \d \eta_{1}  \times  e^{- Q_2} \nonumber
+     \intinf \d \eta_{1} \,  X \, e^{- Q_2} \nonumber
+\end{split}
 \end{gather}
 
 
 Where:
-
-\begin{gather} \label{eq:Q2}
-Q_2 = \half \nu^2 + {3 \over 2 \sigma_1^2} \sum_{i} \nonumber
-     \eta_{i}^2
-     {5 \sigma_0^2 \over 4 \kappa^2 \sigma_1^4} \left[3
+\begin{equation} \label{eq:Q2}
+\begin{split}
+Q_2 &= \half \nu^2 + {3 \over 2 \sigma_1^2} \sum_{i} \eta_{i}^2 \nonumber \\
+     &\qquad + {5 \sigma_0^2 \over 4 \kappa^2 \sigma_1^4} \left[3
      \left( \sum_i \lambda_i^2 - {2 \over \nu \sigma_0} \sum_i
      \lambda_i  n_i^2 + {1 \over \nu^2 \sigma_0^2} \left(
      \sum_i \eta_i^2 \right)^2\right) - \left(\sum_i
      \lambda_i - {1 \over \nu \sigma_0} \sum_i \eta_i^2
-     \right)^2\right]\\ 
-     {1 \over 2 \sigma_0^2 (\kappa^2 - 1)}
+     \right)^2\right] \nonumber \\ 
+     &\qquad + {1 \over 2 \sigma_0^2 (\kappa^2 - 1)}
      \left[\nu \sigma_0 + {\sigma_0^2 \over \sigma_1^2}
      \left(\sum_i \lambda_i - {1 \over \nu \sigma_0} \sum_i
-     \eta_i^2 \right)\right]^2 \\ \nonumber
-\end{gather}
+     \eta_i^2 \right)\right]^2 \\
+\end{split}
+\end{equation}
 
 
 In \ref{eq:allspace_integral}, the integral is taken over $\mathbb{R}^3$ in $\eta$, but is taken over an ordered subspace of $\mathbb{R}^3$ in $\lambda$. This is an enforcement of the restriction:
@@ -97,93 +107,92 @@ In \ref{eq:allspace_integral}, the integral is taken over $\mathbb{R}^3$ in $\et
 
 Only after choosing such an ordering of eigenvalues can one guarantee unique``diagonal'' decomposition of the hessian into a product of $SO(3)$ matrices and eigenvalues. Without this ordering in place, there is a multiplicity factor of $\frac{1}{3!}$ that appears in front of the integral.
 
-\section{Attempts at an Analytic Solution} \label{analytic}
+\section{Attempts at an Analytic Solution}
 
 \subsection{Multivariate Gaussian Integrals}
 
 Ideally, we would like to find a fully analytic solution to this integral. Its form is reminiscent of a gaussian integral in multiple variables. Such integrals are actually quite simple to evaluate analytically. Consider the following:
 
 \begin{equation} \label{eq:multigaus}
-\int_{\mathbb{R}^N} \d^N x \hspace{0.5pc} \exp(-\frac{1}{2} \vec{x}^T \Sigma^{-1} \vec{x})
+\int_{\mathbb{R}^N} \d^N x \hspace{0.2pc} \exp \left(-\dfrac{1}{2} \hspace{0.2pc}\vec{x}^\top  \operatorname{\Sigma^{-1}} \vec{x} \right)
 \end{equation}
 
-If we want this integral to converge, $\Sigma^{-1}$ must be positive-definite, which is guaranteed of $\Sigma$ is indeed a covariance matrix. The inner product of $\vec{x}$ through $\Sigma^{-1}$ yields a quadratic polynomial homogeneous in $x_i$, which is exactly what we need for a general multivariate gaussian. Untangling this polynomial appears to be a particularly horrible task, but the trick is to diagonalize.
-As $\Sigma$ is a symmetric matrix, so must be its inverse:
+If we want this integral to converge, $\Sigma^{-1}$ must be positive-definite, which is guaranteed if $\Sigma$ is a covariance matrix because its eigenvalues are auto-variances of the eigenvectors, and are therefore greater than zero. The inner product of $\vec{x}$ through $\Sigma^{-1}$: $\vec{x}^\top \Sigma^{-1} \vec{x}$, yields a quadratic polynomial homogeneous in $x_i$, which is exactly what we need for a general multivariate gaussian. Untangling this polynomial appears to be a particularly horrible task, but the trick is to diagonalize.
+$\Sigma$ is a symmetric matrix, so its inverse must be as well:
 
 \begin{gather*}
-(\Sigma \Sigma^{-1})^T = \mathds{I} \\
-(\Sigma^{-1})^T \Sigma = \mathds{I} \\
-\therefore \hspace{1pc}  (\Sigma^{-1})^T = \Sigma^{-1}
+(\operatorname{\Sigma} \operatorname{\Sigma^{-1}})^\top = \mathds{1} \\
+(\operatorname{\Sigma^{-1}})^\top \operatorname{\Sigma} = \mathds{1} \\
+\therefore \hspace{1pc}  (\operatorname{\Sigma^{-1}})^\top = \operatorname{\Sigma^{-1}}
 \end{gather*}
 
 the (real) spectral theorem tells us that the diagonal decomposition:
 
 \begin{equation} \label{eq:diagdecomp}
-\Sigma^{-1} = R^T D R
+\operatorname{\Sigma^{-1}} = \operatorname{R^\top} \operatorname{D} \operatorname{R}
 \end{equation} 
 
-yields $R$ from $SO(N)$, so we may change basis into the eigenbasis of $\Sigma^{-1}$ with unit jacobian.
-Furthermore, a covariance matrix and its inverse are both positive-definite, so $D= D^{1/2} D^{1/2}$.
+yields $R$ from $O(N)$ (the orthogonal group in $N$ dimensions).
+Furthermore, a covariance matrix and its inverse are both positive-definite (to see this, invert in the eigenbasis, where the matrix is diagonal with all entries positive), so $D= D^{1/2} D^{1/2}$ with all entries real.
 We may change variables:
 
 \begin{equation} \label{eq:changevar}
-\vec{x} \rightarrow \vec{u} = D^{1/2} R \vec{x}
+\vec{x} \rightarrow \vec{u} = \operatorname{D^{1/2}} \operatorname{R} \vec{x}
 \end{equation}
 
 And now \ref{eq:multigaus} becomes:
 
 \begin{equation} \label{eq:multigaus_trans}
-\frac{1}{|\Sigma^{-1}|^{1/2}} \int_{\mathbb{R}^N} \d^N u \hspace{0.5pc} \exp(-\frac{1}{2} \vec{u}^T \vec{u})
+\dfrac{1}{|\operatorname{\Sigma^{-1}}|^{1/2}} \int_{\mathbb{R}^N} \d^N u \hspace{0.2pc} \exp \left(-\dfrac{1}{2} \hspace{0.2pc} \vec{u}^\top \vec{u}\right)
 \end{equation}
 
-Which can be separated and re-written:
+Where the determinant prefactor comes from the jacobian of our change-of-variables. Re-writing \ref{eq:multigaus_trans}:
 
 \begin{equation} \label{eq:multigaus_trans}
-\frac{1}{|\Sigma^{-1}|^{1/2}} \prod_{i=1}^{N} \int_{\mathbb{R}} \d u_{i} \hspace{0.5pc} \exp(-\frac{1}{2} u_{i}^2)
+\dfrac{1}{|\operatorname{\Sigma^{-1}}|^{1/2}} \prod_{i=1}^{N} \int_{\mathbb{R}} \d u_{i} \hspace{0.2pc} \exp\left(-\dfrac{1}{2} \hspace{0.2pc} u_{i}^2\right)
 \end{equation}
 
 Performing the canonical integration:
 
 \begin{equation} \label{eq:multigaus_final}
-\frac{1}{|\Sigma^{-1}|^{1/2}} \prod_{i=1}^{N} \int_{\mathbb{R}} \d u_{i} \hspace{0.5pc} \exp(-\frac{1}{2} u_{i}^2) = (2\pi)^{N/2} |\Sigma|^{1/2}
+\dfrac{1}{|\operatorname{\Sigma^{-1}}|^{1/2}} \prod_{i=1}^{N} \int_{\mathbb{R}} \d u_{i} \hspace{0.2pc} \exp \left(-\dfrac{1}{2} \hspace{0.2pc} u_{i}^2 \right) = (2\pi)^{N/2} \hspace{0.2pc}|\operatorname{\Sigma}|^{1/2}
 \end{equation}
 
 Polynomial prefactors of the exponent can be obtained by parameter-differentiation, so this technique is quite general. 
 
-The remaining complication is an in-homogeneous polynomial in the exponent. To order 2, this means there may be linear terms. There is a nice trick (variable change) to address this case. What follows is an adaptation of FIXME Cite.
+The remaining complication is an inhomogeneous polynomial in the exponent. To order 2, this means there may be linear terms. There is a nice trick (variable change) to address this case. What follows is an adaptation of FIXME Cite.
 
-Say we find the following integral:
-
+Say we encounter the following integral:
 
 \begin{equation} \label{eq:multigaus_linterm}
-\int_{\mathbb{R}^N} \d^N x \hspace{0.5pc} \exp(-\frac{1}{2} \vec{x}^T \Sigma^{-1} \vec{x} + \vec{J}^T \vec{x})
+\int_{\mathbb{R}^N} \d^N x \hspace{0.2pc} \exp \left(-\dfrac{1}{2} \hspace{0.2pc}  \vec{x}^\top \operatorname{\Sigma^{-1}} \vec{x} + \vec{J}^\top \vec{x} \right)
 \end{equation}
 
-Which has the additional linear terms: $\vec{J}^T \vec{X}$. The trick is the change of variables:
+Which has linear terms: $\vec{J}^\top \vec{X}$. The trick is the change of variables:
 
-$$\vec{x} = \Sigma \vec{J} + \vec{\tilde{x}}$$
+$$\vec{x} = \operatorname{\Sigma} \vec{J} + \vec{\tilde{x}}$$
 
-The integral becomes, on change-of-variables:
+The integral becomes, after this transformation:
 
 \begin{equation} \label{eq:multigaus_lintrick}
-\exp\left(\frac{1}{2}\vec{J}^T \Sigma J\right) \int_{\mathbb{R}^N} \d^N \tilde{x} \hspace{0.5pc} \exp\left(-\frac{1}{2} \vec{\tilde{x}}^T \Sigma^{-1} \vec{\tilde{x}} + \vec{J}^T \vec{\tilde{x}}\right)
+\exp\left(\dfrac{1}{2}\vec{J}^\top \operatorname{\Sigma} J\right) \int_{\mathbb{R}^N} \d^N \tilde{x} \hspace{0.2pc} \exp\left(-\dfrac{1}{2} \hspace{0.2pc} \vec{\tilde{x}}^\top \operatorname{\Sigma^{-1}} \vec{\tilde{x}} + {\vec{J}}^\top \vec{\tilde{x}}\right)
 \end{equation}
 
-The new integrand has a homogeneous polynomial in its exponent, and will therefore yield to the same separation as \ref{eq:multigaus}.
+The new integrand has a homogeneous polynomial in its exponent, and will therefore yield to the same diagonalization technique as \ref{eq:multigaus}.
 
-\subsection{Lambdas First} \label{lambdasec}
+\section{Lambdas First} \label{lambdasec}
 
-With these techniques in hand, let us examine our density integral, ~\ref{eq:allspace_integral} and it's exponenet, ~\ref{eq:Q2}. The first thing to notice is that $Q_2$ is quadratic in $\lambda$, but quartic in $\eta$. Since the gaussian tricks above do not apply to a quartic polynomial, there is no obvious way to proceed in 6 dimensions. This roadblock suggests that we try one of the 3 dimensional subspaces (one accorded to the the three $\lambda$ and the other to the three $\eta$), treating variables from the other as constants. Since the $\lambda$ only appear to order 2, let's start there. Treating the $\eta$ as constants, $Q_2$ is an inhomogeneous polynomial of order 2 in $\eta$, and so should be ammenable to the diagonal separation from above.
-\par Indeed, it is possible to diagonalize the matrix which generates this polynomial, and to change variables to the eigenbasis. Unfortunately, we are only interested in field minima, and so our $\lambda$ integrals are not taken over all space. To simplify the limits of integration, we can forget the ordering of $\lambda_i$ and simply integrate each $\lambda$ over $[0,\infty)$. If we were integrating in only one $\lambda$ dimension, we could cast the integral as an evaluation of the gamma function:
+With these techniques in hand, let us examine our density integral, ~\ref{eq:allspace_integral} and it's exponenet, ~\ref{eq:Q2}. The first thing to notice is that $Q_2$ is quadratic in $\lambda$, but quartic in $\eta$. Since the gaussian tricks above do not apply to a quartic polynomial, there is no obvious way to proceed in 6 dimensions. This roadblock suggests that we try one of the 3 dimensional subspaces (one accorded to the the three $\lambda_i$ and the other to the three $\eta_i$), treating variables from the other as constants. Since the $\lambda_i$ only appear to order 2, we will start there. Treating the $\eta_i$ as constants, $Q_2$ is an inhomogeneous polynomial of order 2 in $\eta$, and so should be vulnerable to the diagonal separation technique described above.
+\par Indeed, it is possible to diagonalize the matrix which generates this polynomial, and to change variables accordingly. Unfortunately, we are only interested in field minima, and so our $\lambda$ integrals are not taken over all space. To simplify the limits of integration, we can forget the ordering of $\lambda_i$ and simply integrate each $\lambda$ over $[0,\infty)$, remembering to include the $1/3!$ prefactor. If we were integrating in only one $\lambda$ dimension, we could cast the integral as an evaluation of the gamma function:
 
 \begin{equation} \label{eq:gamma}
 \Gamma(t) = \int_{0}^{\infty} x^{t-1} e^{-x} \d x
 \end{equation}
 
-Unfortunately, because of the linear terms (a constant vector shift as variable change: \ref{eq:changevar}) and the diagonalization rotation, the limits of integration are no longer simple, even neglecting the $\lambda$ ordering. Call the new variables $u_1$, $u_2$, and $u_3$, in which the polynomial exponent becomes $-\frac{1}{2}(u_1^2 + u_2^2 + u_3^2)$. The limits of integration, even without linear terms, define a paralellpiped in 3-space which is bounded on three faces, and extends infinitely to cover what is a distortion (non-$SO(3)$) linear mapping of the positive octant. The issue is, while $R$ may be an orthogonal operator, $D^{1/2}R$ is not, so the limits of integration of $u_3$ will be a linear function of $u_1$ and $u_2$. $u_2$ will be a linear function of $u_1$, and $u_1$ will be free. Now that the limits of the innermost integral are no longer $0$ and $\infty$, there is no gamma-function trick available.  The innermost integral yields an error function in the next two variables. One integral can be done, as the integrals of $e^{-x^2}$ can be expressed in terms of error functions:
+Unfortunately, because of the linear terms (a constant vector shift as variable change: \ref{eq:changevar}) and the diagonalization rotation, the limits of integration are no longer simple, even neglecting the $\lambda$ ordering. Call the new variables $u_1$, $u_2$, and $u_3$, in which the polynomial exponent becomes $-\frac{1}{2}(u_1^2 + u_2^2 + u_3^2)$. The limits of integration, even without linear terms, define a paralellpiped in 3-space which is bounded on three faces, and extends infinitely to cover what a distorted image (non-$O(3)$ linear mapping) of the positive  $\lambda$ octant. The issue is, while $R$ may be an orthogonal operator, $D^{1/2}R$ is not, so the limits of integration of $u_3$ will be a linear function of $u_1$ and $u_2$. $u_2$ will be a linear function of $u_1$, and $u_1$ will be free. Put in more geometric terms, the planes which bound this parallelpiped are not orthogonally oriented. Now that the limits of the innermost integral are no longer $0$ and $\infty$, there is no gamma-function trick available.  The innermost integral yields an error function in the next two variables. One integral can be done, as the integrals of $e^{-x^2}$ can be expressed in terms of error functions:
 
 \begin{equation} \label{eq:erfint}
-\int \d u_1 erf(u_1) = \frac{e^{-u_1^2}}{\sqrt{\pi}} + u_1 erf(u_1)
+\int \d u_1 \hspace{0.2pc}  \text{erf}(u_1) = \frac{e^{-u_1^2}}{\sqrt{\pi}} + u_1  \hspace{0.2pc}  \text{erf}(u_1)
 \end{equation}
 
 And the diagonalized integrand can be expressed as the product: $\exp(-\frac{1}{2} u_1^2) \exp(-\frac{1}{2} u_2^2) \exp(-\frac{1}{2} u_3^2)$, so the integral can be partially factored:
@@ -192,88 +201,100 @@ And the diagonalized integrand can be expressed as the product: $\exp(-\frac{1}{
 A \int_{D1} \d u_1 \exp(-\frac{1}{2} u_1^2) \int_{D2(u_1)} \d u_2 \exp(-\frac{1}{2} u_2^2) \int_{D3(u_1,u_2)} \d u_3 \exp(-\frac{1}{2} u_3^2)
 \end{equation}
 
-Where $A$ is a prefactor depending only on $\eta$ and $\nu$, and $D1$,$D2$,$D3$ are domains of integration corresponding to the parallelpiped volume, with $D2(u_1)$ a function of $u_1$, and $D3(u_1,u_2)$ is a funtion of $u_1$ and $u_2$. These domains should be half-infinite, with either upper or lower bounds, depending on the nature of the variable transofrmation. We will call the finite bounds $l_3(u_1,u_2)$, $l_2(u_1)$, and $l_1$ respectively, where $l_i()$ is an affine transformation of its input vector (linear with constant offset) resulting from the origin-shifts and non-orthogonality of the planes partially bounding the integration parallelpiped.
+Where $A$ is a prefactor depending only on $\eta$ and $\nu$, and $D1$,$D2$,$D3$ are domains of integration whose cartesian product corresponds to the parallelpiped volume, with $D2(u_1)$ a function of $u_1$, and $D3(u_1,u_2)$ a funtion of $u_1$ and $u_2$. These domains should be half-infinite, with either upper or lower bounds, depending on the nature of the variable transofrmation. We will call the finite bounds $l_3(u_1,u_2)$, $l_2(u_1)$, and $l_1$ respectively, where $l_i()$ is an affine transformation of its input vector (linear transformation with constant offset) resulting from the origin-shifts and non-orthogonality of the planes partially bounding the integration parallelpiped.
 
-So we can proceed by evaluating the $u_3$ integral in \ref{gausnest}. Unfortunately, evaluating the corresponding antiderivative over the half-infinite interval $D3$ yields a term of the form: $\frac{e^{-l(u_1,u_2)^2}}{\sqrt{\pi}} + l(u_1,u_2) erf(l(u_1,u_2))$. If we then attempt the $u_2$ integral, we need to evaluate the antiderivative: 
+We can proceed by evaluating the $u_3$ integral in \ref{eq:gausnest}. Unfortunately, evaluating the corresponding antiderivative over the half-infinite interval $D3$ yields a term of the form: 
+
+$$\frac{e^{-l(u_1,u_2)^2}}{\sqrt{\pi}} + l(u_1,u_2) \hspace{0.2pc}  \text{erf}(l(u_1,u_2))$$ 
+
+If we then attempt the $u_2$ integral, we need to evaluate the antiderivative: 
 
 \begin{equation*}
-\int \d u_2 exp(-\frac{1}{2} u_2^2) \left(frac{e^{-l(u_1,u_2)^2}}{\sqrt{\pi}} + l(u_1,u_2) erf(l(u_1,u_2))\right)
+\int \d u_2  \hspace{0.2pc} \exp(-\frac{1}{2} u_2^2) \left(\dfrac{e^{-l(u_1,u_2)^2}}{\sqrt{\pi}} + l(u_1,u_2) \hspace{0.2pc} \text{erf}\left(l(u_1,u_2)\right)\right)
 \end{equation*}
 
 And here we spot the cloven hoof. Even the relatively simple function:
 
 \begin{equation} \label{eq:nonointegral}
-\exp(-x^2) erf(x+c)
+\exp(-x^2)  \hspace{0.2pc} \text{erf}(x+c)
 \end{equation}
 
-does not appear to have an anti-derivative. Consulting an impressive compendium of error-function integrals and antiderivatives FIXME CITE OWEN, provides expressions for similar integrals, but they must be taken over particular domains, and I was unable to translate our complicated case (with nested scaling and shift in the erf arguments) into any of these special representations, although that does not mean it is not possible.
-It is not obvious to me how to proceed, so let us turn to the $\eta$ integrals and see if any progress can be made there.
+does not appear to have an anti-derivative. Consulting a compendium of error-function integrals and antiderivatives FIXME CITE OWEN, we find expressions for similar integrals, but they must be taken over particular domains. Integrals with general boundaries (like ours) do not seem to translate into any of the special cases, although that doesn't mean there isn't a clever trick hiding somewhere in those integral tables.
+It is not obvious how to proceed with the $\lambda$ integrals, so we turn to the $\eta$ integrals to see if any headway can be made there.
 
 \subsection{Eta Integrals}
 
-
-\begin{gather*}
-Q_2 = \half \nu^2 + {3 \over 2 \sigma_1^2} \sum_{i} \nonumber
-     \eta_{i}^2
-     {5 \sigma_0^2 \over 4 \kappa^2 \sigma_1^4} \left[3
+\vspace{1pc}
+\begin{equation*}
+\begin{split}
+Q_2 &= \half \nu^2 + {3 \over 2 \sigma_1^2} \sum_{i} \eta_{i}^2 \nonumber \\
+     &\qquad + {5 \sigma_0^2 \over 4 \kappa^2 \sigma_1^4} \left[3
      \left( \sum_i \lambda_i^2 - {2 \over \nu \sigma_0} \sum_i
      \lambda_i  n_i^2 + {1 \over \nu^2 \sigma_0^2} \left(
      \sum_i \eta_i^2 \right)^2\right) - \left(\sum_i
      \lambda_i - {1 \over \nu \sigma_0} \sum_i \eta_i^2
-     \right)^2\right]\\ 
-     {1 \over 2 \sigma_0^2 (\kappa^2 - 1)}
+     \right)^2\right] \nonumber \\ 
+     &\qquad + {1 \over 2 \sigma_0^2 (\kappa^2 - 1)}
      \left[\nu \sigma_0 + {\sigma_0^2 \over \sigma_1^2}
      \left(\sum_i \lambda_i - {1 \over \nu \sigma_0} \sum_i
-     \eta_i^2 \right)\right]^2 \\ \nonumber
-\end{gather*}
+     \eta_i^2 \right)\right]^2 \\
+\end{split}
+\end{equation*}
+\vspace{1pc}
 
-The $\eta$ integrals are, by turns, more and less friendly than the $\lambda$ integrals. On one hand, the $Q_2$ polynomial (\ref{eq:Q2}, reprinted above for convenience) is quartic in $\eta_i$, which complicates things. On the other, the domain of integration is all of $\mathbb{R}^3$, which is encouraging, because it suggests that we might be able to avoid the nested-erf roadblock from the lambda integrals. Two angles of attack will be discussed here.
+
+The $\eta$ integrals are both more and less friendly than the $\lambda$ integrals. On one hand, the $Q_2$ polynomial ((\ref{eq:Q2}), reprinted above for convenience) is quartic in $\eta_i$, which complicates things significantly. On the other hand, the domain of integration is all of $\mathbb{R}^3$, which suggests that diagonalization techniques might not lead to error functions, as before. Two angles of attack will be discussed here.
 
 \subsubsection{Change of Variables}
 
-Although $Q_2$ is quartic in $\eta_i$, there are no linear or cubic terms. Furthermore, $\eta_i$ only enters as $\eta_i^2$. Consqeuently, we may rewrite the $\eta$-dependent form of $Q_2$ in inner-product notation in terms not of $\vec{\eta}$, but rather $\vec{\eta^2} = (\eta_1^2,\eta_2^2,eta_3^2)$.
+Although $Q_2$ is quartic in $\eta_i$, there are no linear or cubic terms. Furthermore, $\eta_i$ only enters as $\eta_i^2$. Consqeuently, we may rewrite the $\eta$-dependent form of $Q_2$ in inner-product notation not in terms of $\vec{\eta}$, but rather:
+$$\vec{\eta^2} = (\eta_1^2,\eta_2^2,\eta_3^2)$$.
+
+Rewriting $Q_2$ with this handy vector yields:
 
 \begin{equation} \label{eq:eta_squared}
-Q_2 = -\frac{1}{2} \left(\vec{\eta^2}^T \operatorname{M} \vec{\eta^2} + J^T \vec{\eta^2} + c \right)
+Q_2 = -\frac{1}{2} \left(\vec{\eta^2}^\top \operatorname{M} \vec{\eta^2} + J^\top \vec{\eta^2} + c \right)
 \end{equation}
 
-Exploiting the convenient representation of the $\eta_i^2$ in a vector format, we perform a change of variables.
+Exploiting the representation of the $\eta_i^2$ in a vector format, we perform a change of variables.
 
 $$v_i = \eta_i^2$$
 
-This is a transformation, component-wise, of the $\vec{\eta^2}$ vector into a vector $\vec{v}$.
+This is a transformation, component-wise, of $\vec{\eta^2}$ into a vector $\vec{v}$.
 
 This transformation yields the jacobian matrix:
 
 \begin{equation}
-\frac{\partial v_i}{\partial \eta_j} = 2*(v_i)^{1/2} \delta^{i}_{j}
+\frac{\partial v_i}{\partial \eta_j} = 2(v_i)^{1/2} \delta^{i}_{j}
 \end{equation}
 
-Incorporating the corresponding jacobian factor, the eta integrals become, upon change-of-variables:
+Incorporating the corresponding jacobian factor, the eta integrals become:
 
 \begin{equation} \label{eq:eta_lintrick}
-\exp\left(\frac{1}{2}\vec{J}^T \Sigma J\right) \int_0^{\infty} \d v_1 \int_0^{\infty} \d v_2 \int_0^{\infty} \d v_3 \hspace{0.5pc}  (64 v_1 v_2 v_3)^{-1/2} \exp\left(-\frac{1}{2} \vec{v}^T \Sigma^{-1} \vec{v} + \vec{J}^T \vec{v}\right)
+\exp\left(\frac{1}{2}\vec{J}^\top \operatorname{\Sigma} J\right) \int_0^{\infty} \d v_1 \int_0^{\infty} \d v_2 \int_0^{\infty} \d v_3 \hspace{0.5pc}  (64 v_1 v_2 v_3)^{-1/2} \exp\left(-\frac{1}{2} \vec{v}^\top \operatorname{\Sigma^{-1}} \vec{v} + \vec{J}^\top \vec{v}\right)
 \end{equation}
 
 To remove the term linear in $v_i$, we use the trick we applied to \ref{eq:multigaus_linterm}:
 
-$$\vec{v} = \operatorname{M}^{-1} \vec{J} + \vec{\tilde{v}}$$
+$$\vec{v} = \operatorname{M^{-1}} \vec{J} + \vec{\tilde{v}}$$
 
-Which substitutiion yields:
+Which substitution yields:
 
-\begin{equation} 
-\exp\left(\frac{1}{2}\vec{J}^T \operatorname{M}^{-1} J\right) \int_{-w_1}^{\infty} \d \tilde{v_1} \int_{-w_2}^{\infty} \d \tilde{v_2} \int_{-w_3}^{\infty} \d \tilde{v_3}  (64 (\tilde{v}_1 + w_1)(\tilde{v}_2 + w_2)(\tilde{v}_2 + w_2))^{-1/2}  \exp\left(-\frac{1}{2} \vec{\tilde{v}}^T \operatorname{M} \vec{\tilde{v}} + \vec{J}^T \vec{\tilde{v}}\right)
-\end{equation}
+\begin{gather} 
+\exp\left(\frac{1}{2} \hspace{0.2pc} \vec{J}^\top \operatorname{M}^{-1} J\right) \int_{-w_1}^{\infty} \d \tilde{v_1} \int_{-w_2}^{\infty} \d \tilde{v_2} \int_{-w_3}^{\infty} \d \tilde{v_3}   \hspace{0.2pc} (64 (\tilde{v}_1 + w_1)(\tilde{v}_2 + w_2)(\tilde{v}_2 + w_2))^{-1/2} \nonumber \\ 
+\times \exp\left(-\frac{1}{2} \hspace{0.2pc} \vec{\tilde{v}}^\top 			\operatorname{M} \vec{\tilde{v}} + \vec{J}^\top \vec{\tilde{v}}\right) \\ \nonumber
+\end{gather}
 
 Where $w_i = {(\operatorname{M}^{-1})_i}^j J_j$
+\vspace{1pc}
 
 In preparing our integral for diagonalization, we have fallen into the same nested-erf trap as in Section \ref{lambdasec}! The change of variables to $v_i = \eta_i^2$ changed the limits of integration to half-lines. As a result, diagonalization will scramble the limits, yielding the same kind of parallelpiped trouble as before.
 
-As a last-ditch attempt to salvage this integration technique, one might consider the $64 (\tilde{v}_1 + w_1)(\tilde{v}_2 + w_2)(\tilde{v}_2 + w_2))^{-1/2}$ factor as a handle for contour integration in the complex plane. Unfortunately, although this jacobian factor does have singularities in each $\tilde{v}_i$ plane, and the complementary factor is an entire function, these singularities are not poles, but rather boundaries of branch cuts. Without any poles, it does not appear to be possible to do contour integration.
+As a last-ditch attempt to salvage this integration technique, one might consider the $64 (\tilde{v}_1 + w_1)(\tilde{v}_2 + w_2)(\tilde{v}_2 + w_2))^{-1/2}$ factor as a handle for contour integration in the complex plane. Unfortunately, although this jacobian factor does have singularities in each $\tilde{v}_i$ plane, and the complementary factor is an entire function, these singularities are not poles, but rather boundaries of branch cuts. Without any poles, it does not appear to be possible to leverage the residue theorem.
 
 \subsubsection{Multilinear Forms}
 
-In our efforts to write order 2 polynomials as inner products of vectors across some $\Sigma^{-1}$ matrix, we have been making implicit use of a bijective relationship between quadratic homogeneous (all terms have the same total order) polynomials in $n$ variables and inner products of the form: $\vec{x}^T \operatorname{\Sigma}^{-1} \vec{x}$ where $\operatorname{\Sigma}^{-1}$ is a symmetric matrix. Such matrices, in this context, are representations of a map of a tensor product of vector spaces onto their underlying field: $F: V \otimes V \rightarrow \mathbb{R}$ (the reals, in our case). The motivation for this point of view is that it can be generalized to multi-linear forms, which are capable of mapping tensor products of more than two vector spaces onto homogeneous polynomials of arbitrary degree. These multi-linear forms have representations as tensors, and in the case of symmetric tensors, there is, once again, a bijection between homogeneous polynomials of degree $k$ and symmetric tensors of order $k$. The connection is made clearer when these tensors are used as multilinear forms to map elements of the vector space: $V^{\otimes k}$ onto $\mathbb{R}$. To visualize the generalization, let's begin with the order-2 (matrix case).
+In our efforts to write order 2 polynomials as inner products of vectors across some $\Sigma^{-1}$ matrix, we have been making implicit use of a bijective relationship between quadratic homogeneous (all terms have the same total order: 2) polynomials in $n$ variables and inner products of the form: $\vec{x}^\top \operatorname{\Sigma}^{-1} \vec{x}$ where $\operatorname{\Sigma}^{-1}$ is a symmetric matrix. Such matrices, in this context, are representations of a map of a product of vector spaces onto their underlying field: $F: V \times V \rightarrow \mathbb{R}$ (the reals, in our case). The motivation for this point of view is that it can be generalized to multi-linear forms, which are capable of mapping tensor products of more than two vector spaces onto homogeneous polynomials of arbitrary degree. These multi-linear forms have representation as tensors, and in the case of symmetric tensors, there is, once again, a bijection between homogeneous polynomials of degree $k$ and symmetric tensors of order $k$ (where the order of such a tensor is the number of vector-space factors in the cartesian product: $V^{\times k}$ which is mapped to $\mathbb{R}$). The connection is made clearer when these tensors are used as multilinear forms to map elements of the vector space: $V^{\times k}$ onto $\mathbb{R}$. To visualize the generalization, let's begin with the order-2 (the matrix case).
 
 Let $\mathcal{P}_2(x)$ be a homogeneous polynomial of order 2, where $x\in V_2(\mathbb{R})$, which is to say x is a vector in a real vector space of dimension $2$.
 
@@ -528,7 +549,7 @@ As mentioned in Section \ref{numsol}, the Vegas algorithm was the only technique
 
 The vegas algoritm was run on the toy integral with simple values of $\sigma_1=2$, $\sigma_2=2$, and $\kappa=2$ chosen not to correspond to any real power spectrum, but out of convenience. The algorithm was run with increasing sample resolutions of $10^4$, $10^5$, and $10^6$ samples per iteration, and the results are plotted in Figures \ref{fig:toy_e4_wide}, \ref{fig:toy_e5_wide}, and \ref{fig:toy_e6_wide}; respectively.
 
-Notice that the absolute error is decaying with increasing resolution (as expected), but also that the $Chi_^2/d.o.f.$ value for $10^4$ samples per iteration is disturbingly distant from unity. This is likely a consequence of the law of large numbers as applied to the sample variance. Near $\nu$ = 0, $Q_2$ appears to vary rapidly. With few samples, the sample estimate of variance at small $\nu$ is likely underestimating the true variance, which leads to an underestimate of the error in the integral mean, which leads to a poor ``goodness of fit''. This improves with increasing numbers of samples, which is consistent with the tendency of the sample variance toward the true variance as $N \rightarrow \infty$. According to the analytic formulation of this integral (\ref{eq:toyint}), there is a singularity at $\nu=0$. Hopefully, there will be no singularities in the true density integral, so it is not profitable at this point to critique the performance of the integral at extremely small $\nu$.
+Notice that the absolute error is decaying with increasing resolution (as expected), but also that the $Chi^2_{red}$ value for $10^4$ samples per iteration is disturbingly distant from unity. This is likely a consequence of the law of large numbers as applied to the sample variance. Near $\nu$ = 0, $Q_2$ appears to vary rapidly. With few samples, the sample estimate of variance at small $\nu$ is likely underestimating the true variance, which leads to an underestimate of the error in the integral mean, which leads to a poor ``goodness of fit''. This improves with increasing numbers of samples, which is consistent with the tendency of the sample variance toward the true variance as $N \rightarrow \infty$. According to the analytic formulation of this integral (\ref{eq:toyint}), there is a singularity at $\nu=0$. Hopefully, there will be no singularities in the true density integral, so it is not profitable at this point to critique the performance of the integral at extremely small $\nu$.
 
 \FloatBarrier
 
@@ -656,6 +677,32 @@ KBAR:  6.0   MAXPCT:  0.341659925564
 
 
 
+
+%@article{doi:10.1080/03610918008812164,
+%author = {   D. B.   Owen },
+%title = {A table of normal integrals},
+%journal = {Communications in Statistics - Simulation and Computation},
+%volume = {9},
+%number = {4},
+%pages = {389-419},
+%year = {1980},
+%doi = {10.1080/03610918008812164},
+
+%URL = { 
+%        http://dx.doi.org/10.1080/03610918008812164
+%    
+%},
+%eprint = { 
+%        http://dx.doi.org/10.1080/03610918008812164
+%    
+%}
+%
+%}
+
+
+
+
+%BIB
 
 %@article{doi:10.1080/03610918008812164,
 %author = {   D. B.   Owen },
