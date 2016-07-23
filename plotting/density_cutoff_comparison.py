@@ -11,7 +11,7 @@ rcParams['figure.figsize'] = 10, 8
 plt.rc('font', size=16)
 
 
-f=np.load("../output/fine_log_density_closetest_e6"+".npz")
+f=np.load("../output/fine_logwide_density_closetest_e6"+".npz")
 
 kbar=f['kbar']
 npoints=f['npoints']
@@ -19,7 +19,7 @@ nu=f['nu']
 
 #print nu
 #xedge=[0.09,2.1]
-xedge=[0.005,1.005]
+xedge=[0.01,10.0]
 
 def nucut(nu,xlo,xhi):
 	return xlo<=nu and nu <= xhi
@@ -54,6 +54,9 @@ colors=['red','orange','green','blue','purple']
 
 axes.append(plt.subplot2grid((4,4),(0,0),colspan=4,rowspan=4))
 for k in range(len(kbar)):
+
+	print "KBAR: ",kbar[k], "  MAXPCT: ",np.max(pct_sdevs[:,k])
+
 	axes[0].errorbar(nu,means[:,k],yerr=sdevs[:,k],marker="o",color=colors[k],linestyle='None',lw=1.0,label="Kbar: "+str(kbar[k]))
 #axes[0].plot(xax_vector,pert_vec0,color="red",label="Standard Vacuum Solution",lw=2,ls='-')
 

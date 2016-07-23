@@ -33,7 +33,7 @@ for k in kbar:
 
 
 nsamples=100
-nu=np.logspace(-2.0,2.0,nsamples)
+nu=np.logspace(-2.0,1.0,nsamples)
 
 npoints=1e6
 

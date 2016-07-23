@@ -23,7 +23,7 @@ Define parameters, as well as the set of values nu should loop over,
 and the resolution.
 """
 
-kbar=np.linspace(0.5,10.0,10)
+kbar=np.linspace(0.5,10.0,100)
 for k in kbar:
 	kap,sig = calculate_sigmas(k)
 	print k
@@ -33,9 +33,9 @@ for k in kbar:
 
 
 nsamples=6
-nu=[0.1,0.5,1.0,2.0,5.0,10.0]
+nu=[0.1,0.5,1.0,2.0,5.0,5.0]
 
-npoints=1e5
+npoints=5e6
 
 """
 Initialize output vectors.
@@ -96,6 +96,6 @@ for n in range(len(kbar)):
 Write these arrays out to an npz file for plotting.
 """
 
-np.savez("output/kbarscan_density_e5.npz",npoints=npoints,sigma=sigma,kappa=kappa,nu=nu,means=means,sdevs=sdevs,pct_sdevs=pct_sdevs,kbar=kbar)
+np.savez("output/kbarscan_fine_density_e6.npz",npoints=npoints,sigma=sigma,kappa=kappa,nu=nu,means=means,sdevs=sdevs,pct_sdevs=pct_sdevs,kbar=kbar)
 
 

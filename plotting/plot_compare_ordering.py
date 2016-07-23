@@ -78,6 +78,7 @@ axes[0].plot(truex,truey,ls='-',lw=1.5,color='black',label="Analytic: Guth")
 axes[0].set_xlabel(r'$\nu$'+" (Field Standard Deviations)",fontsize=18)
 axes[0].set_ylabel(r'$\langle \lambda_1 \lambda_2 \lambda_3 \rangle_{Q_2}$',fontsize=18)
 axes[0].set_xlim(xedge)
+axes[0].set_ylim([-10.0,3.0])
 axes[0].yaxis.set_major_formatter(mpl.ticker.ScalarFormatter(useMathText=True, useOffset=False))
 
 axes.append(plt.subplot2grid((4,4),(0,0),colspan=4,sharex=axes[0]))
